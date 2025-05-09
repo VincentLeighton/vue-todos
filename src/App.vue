@@ -35,11 +35,22 @@ const todos = ref([
   },
 ])
 
+type Todo = {
+  id: number | null
+  title: string
+  summary: string
+  author: string
+  description: string
+  imageUrl: string
+  category: string
+  completed: boolean
+}
+
 // Modal visibility state
 const showModal = ref(false)
 
 // New todo object
-const newTodo = ref({
+const newTodo = ref<Todo>({
   id: null,
   title: '',
   summary: '',
@@ -53,8 +64,7 @@ const newTodo = ref({
 // Function to add a new todo
 const addTodo = () => {
   if (newTodo.value.title.trim() && newTodo.value.summary.trim() && newTodo.value.author.trim()) {
-    newTodo.value.id = todos.value.length + 1
-    todos.value.push({ ...newTodo.value })
+    todos.value.push({ ...newTodo.value, id: todos.value.length + 1 }) // Add new todo to the list
     resetNewTodo()
     showModal.value = false
   } else {
@@ -80,11 +90,25 @@ const resetNewTodo = () => {
 const deleteTodo = (id: number) => {
   todos.value = todos.value.filter((todo) => todo.id !== id)
 }
+
+// Function to download todos as a JSON file
+const downloadTodos = () => {
+  const dataStr = JSON.stringify(todos.value, null, 2) // Convert todos to JSON string
+  const blob = new Blob([dataStr], { type: 'application/json' }) // Create a Blob
+  const url = URL.createObjectURL(blob) // Create a URL for the Blob
+  const link = document.createElement('a') // Create a temporary anchor element
+  link.href = url
+  link.download = 'todos.json' // Set the file name
+  link.click() // Trigger the download
+  URL.revokeObjectURL(url) // Clean up the URL object
+}
 </script>
 
 <template>
   <main>
     <button @click="showModal = true">Add New Todo</button>
+    <button @click="downloadTodos">Download Todos</button>
+    <!-- Button to download todos -->
     <table>
       <thead>
         <tr>
