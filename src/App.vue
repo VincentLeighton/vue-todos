@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 
 // Updated list of todos with additional fields
-const todos = ref([
+const todos = ref<Todo[]>([
   {
     id: 1,
     title: 'Buy groceries',
@@ -124,7 +124,7 @@ const downloadTodos = () => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="todo in todos" :key="todo.id">
+        <tr v-for="todo in todos" :key="todo.id ?? 'fallback-key'">
           <td>{{ todo.id }}</td>
           <td>{{ todo.title }}</td>
           <td>{{ todo.summary }}</td>
@@ -138,7 +138,7 @@ const downloadTodos = () => {
             <input type="checkbox" v-model="todo.completed" />
           </td>
           <td>
-            <button @click="deleteTodo(todo.id)">Delete</button>
+            <button @click="deleteTodo(todo.id as number)">Delete</button>
           </td>
         </tr>
       </tbody>
