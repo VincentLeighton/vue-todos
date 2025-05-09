@@ -135,7 +135,7 @@ const downloadTodos = () => {
           <td>{{ todo.author }}</td>
           <td>{{ todo.description }}</td>
           <td>
-            <img :src="todo.imageUrl" alt="Todo image" width="50" height="50" />
+            <img :src="todo.imageUrl" :alt="todo.imageUrl" width="50" height="50" />
           </td>
           <td>{{ todo.category }}</td>
           <td>
