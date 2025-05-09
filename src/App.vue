@@ -93,14 +93,19 @@ const deleteTodo = (id: number) => {
 
 // Function to download todos as a JSON file
 const downloadTodos = () => {
-  const dataStr = JSON.stringify(todos.value, null, 2) // Convert todos to JSON string
-  const blob = new Blob([dataStr], { type: 'application/json' }) // Create a Blob
-  const url = URL.createObjectURL(blob) // Create a URL for the Blob
-  const link = document.createElement('a') // Create a temporary anchor element
-  link.href = url
-  link.download = 'todos.json' // Set the file name
-  link.click() // Trigger the download
-  URL.revokeObjectURL(url) // Clean up the URL object
+  try {
+    const dataStr = JSON.stringify(todos.value, null, 2) // Convert todos to JSON string
+    const blob = new Blob([dataStr], { type: 'application/json' }) // Create a Blob
+    const url = URL.createObjectURL(blob) // Create a URL for the Blob
+    const link = document.createElement('a') // Create a temporary anchor element
+    link.href = url
+    link.download = 'todos.json' // Set the file name
+    link.click() // Trigger the download
+    URL.revokeObjectURL(url) // Clean up the URL object
+  } catch (error) {
+    console.error('Error downloading todos:', error)
+    alert('An error occurred while downloading the todos. Please try again.')
+  }
 }
 </script>
 
@@ -142,7 +147,7 @@ const downloadTodos = () => {
             <input type="checkbox" v-model="todo.completed" />
           </td>
           <td>
-            <button @click="deleteTodo(todo.id as number)">Delete</button>
+            <button id="delete" @click="deleteTodo(todo.id as number)">Delete</button>
           </td>
         </tr>
       </tbody>
@@ -155,15 +160,15 @@ const downloadTodos = () => {
         <form @submit.prevent="addTodo">
           <label>
             Title:
-            <input v-model="newTodo.title" type="text" required />
+            <input id="title" v-model="newTodo.title" type="text" required />
           </label>
           <label>
             Summary:
-            <input v-model="newTodo.summary" type="text" required />
+            <input id="summary" v-model="newTodo.summary" type="text" required />
           </label>
           <label>
             Author:
-            <input v-model="newTodo.author" type="text" required />
+            <input id="author" v-model="newTodo.author" type="text" required />
           </label>
           <label>
             Description:
