@@ -106,9 +106,13 @@ const downloadTodos = () => {
 
 <template>
   <main>
-    <button @click="showModal = true">Add New Todo</button>
-    <button @click="downloadTodos">Download Todos</button>
-    <!-- Button to download todos -->
+    <!-- Buttons container -->
+    <div class="buttons-container">
+      <button @click="showModal = true">Add New Todo</button>
+      <button @click="downloadTodos">Download Todos</button>
+    </div>
+
+    <!-- Table -->
     <table>
       <thead>
         <tr>
@@ -201,6 +205,7 @@ const downloadTodos = () => {
 }
 main {
   display: flex;
+  flex-direction: column;
   justify-content: center; /* Horizontally center the table */
   align-items: center; /* Vertically center the table */
   height: 100%; /* Ensure the main element takes full height */
@@ -233,6 +238,12 @@ img {
   display: block;
   max-width: 100%;
   height: auto;
+}
+
+.buttons-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px; /* Add spacing between buttons and the table */
 }
 
 button {
