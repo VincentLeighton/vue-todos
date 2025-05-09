@@ -34,12 +34,57 @@ const todos = ref([
     completed: false,
   },
 ])
+
+// Modal visibility state
+const showModal = ref(false)
+
+// New todo object
+const newTodo = ref({
+  id: null,
+  title: '',
+  summary: '',
+  author: '',
+  description: '',
+  imageUrl: '',
+  category: '',
+  completed: false,
+})
+
+// Function to add a new todo
+const addTodo = () => {
+  if (newTodo.value.title.trim() && newTodo.value.summary.trim() && newTodo.value.author.trim()) {
+    newTodo.value.id = todos.value.length + 1
+    todos.value.push({ ...newTodo.value })
+    resetNewTodo()
+    showModal.value = false
+  } else {
+    alert('Title, Summary, and Author are required fields.')
+  }
+}
+
+// Function to reset the new todo form
+const resetNewTodo = () => {
+  newTodo.value = {
+    id: null,
+    title: '',
+    summary: '',
+    author: '',
+    description: '',
+    imageUrl: '',
+    category: '',
+    completed: false,
+  }
+}
+
+// Function to delete a todo
+const deleteTodo = (id: number) => {
+  todos.value = todos.value.filter((todo) => todo.id !== id)
+}
 </script>
 
 <template>
-  <header></header>
-
   <main>
+    <button @click="showModal = true">Add New Todo</button>
     <table>
       <thead>
         <tr>
@@ -51,6 +96,7 @@ const todos = ref([
           <th>Image</th>
           <th>Category</th>
           <th>Completed</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -64,18 +110,87 @@ const todos = ref([
             <img :src="todo.imageUrl" alt="Todo image" width="50" height="50" />
           </td>
           <td>{{ todo.category }}</td>
-          <td>{{ todo.completed ? 'Yes' : 'No' }}</td>
+          <td>
+            <input type="checkbox" v-model="todo.completed" />
+          </td>
+          <td>
+            <button @click="deleteTodo(todo.id)">Delete</button>
+          </td>
         </tr>
       </tbody>
     </table>
+
+    <!-- Modal -->
+    <div v-if="showModal" class="modal">
+      <div class="modal-content">
+        <h2>Add New Todo</h2>
+        <form @submit.prevent="addTodo">
+          <label>
+            Title:
+            <input v-model="newTodo.title" type="text" required />
+          </label>
+          <label>
+            Summary:
+            <input v-model="newTodo.summary" type="text" required />
+          </label>
+          <label>
+            Author:
+            <input v-model="newTodo.author" type="text" required />
+          </label>
+          <label>
+            Description:
+            <textarea v-model="newTodo.description"></textarea>
+          </label>
+          <label>
+            Image URL:
+            <input v-model="newTodo.imageUrl" type="text" />
+          </label>
+          <label>
+            Category:
+            <select v-model="newTodo.category">
+              <option value="Personal">Personal</option>
+              <option value="Health">Health</option>
+              <option value="Work">Work</option>
+              <option value="Other">Other</option>
+            </select>
+          </label>
+          <label>
+            Completed:
+            <input v-model="newTodo.completed" type="checkbox" />
+          </label>
+          <div class="modal-actions">
+            <button type="submit">Add</button>
+            <button type="button" @click="showModal = false">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </main>
 </template>
 
 <style scoped>
+#app {
+  grid-template-columns: auto 1fr auto !important;
+  grid-template-rows: 1fr 1fr !important;
+  display: grid;
+  height: 100vh;
+}
+main {
+  display: flex;
+  justify-content: center; /* Horizontally center the table */
+  align-items: center; /* Vertically center the table */
+  height: 100%; /* Ensure the main element takes full height */
+}
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 th,
@@ -94,5 +209,54 @@ img {
   display: block;
   max-width: 100%;
   height: auto;
+}
+
+button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button[type='button'] {
+  background-color: #ff4d4d;
+}
+
+button[type='button']:hover {
+  background-color: #ff1a1a;
+}
+
+/* Modal styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: gray;
+  color: #f4f4f4;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+}
+
+.modal-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
 }
 </style>
